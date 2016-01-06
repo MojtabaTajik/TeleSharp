@@ -150,6 +150,41 @@ namespace SampleBot
                         break;
                     }
 
+                    case "keyboard":
+                    {
+                        Bot.SendMessage(new SendMessageParams
+                        {
+                            ChatId = sender.Id.ToString(),
+                            Text = "This is sample keyboard :",
+                            CustomKeyboard = new ReplyKeyboardMarkup
+                            {
+                                Keyboard = new List<List<string>>
+                                {
+                                    new List<string>
+                                    {
+                                        "Yes",
+                                        "No",
+                                        "Cancel"
+                                    }
+                                }
+                            },
+                            ReplyToMessage = message
+                        });
+
+                        break;
+                    }
+
+                    case "yes":
+                    case "no":
+                    case "cancel":
+                    {
+                        Bot.SendMessage(new SendMessageParams
+                        {
+                            ChatId = sender.Id.ToString(),
+                            Text = $"You choose keyboard command : {message.Text}",                            
+                        });
+                        break;
+                    }
 
                     default:
                     {
@@ -157,39 +192,15 @@ namespace SampleBot
                         {
                             ChatId = sender.Id.ToString(),
                             Text = "Unknown command !",
-                            CustomKeyboard = new ReplyKeyboardMarkup
-                            {
-                                Keyboard = new List<List<string>>
-                                {
-                                    new List<string>
-                                    {
-                                        "1",
-                                        "2",
-                                        "3"
-                                    },     new List<string>
-                                    {
-                                        "a",
-                                        "b",
-                                        "c"
-                                    }, new List<string>
-                                    {
-                                        "Answer 1", "yes", "no", ":D"
-                                    }
-                                }
-                            },ReplyToMessage = message
                         });
+
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Bot.SendMessage(new SendMessageParams
-                {
-                    ChatId = sender.Id.ToString(),
-                    Text = ex.Message,
-                    ReplyToMessage = message,
-                });
+
             }
         }
 
