@@ -44,6 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\FileDownloadResult.cs" />
+    <Compile Include="Entities\Inline\AnswerInlineQuery.cs" />
+    <Compile Include="Entities\Inline\ChosenInlineResult.cs" />
+    <Compile Include="Entities\Inline\InlineQuery.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResult.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResultArticle.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResultGif.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResultMpeg4Gif.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResultPhoto.cs" />
+    <Compile Include="Entities\Inline\InlineQueryResultVideo.cs" />
+    <Compile Include="Entities\SendEntities\ReplyKeyboardMarkup.cs" />
+    <Compile Include="Entities\SendEntities\SendMessageParams.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

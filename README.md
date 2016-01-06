@@ -16,5 +16,7 @@ It support most of the features of Telegram Bot API including :
 - Send & receive audio
 - Send & receive document
 - Set current status of bot like(Typing, Upload photo, Upload video and etc)
+- Support Inline Bots
+- Support ReplyKeyboardMarkup (Custom keyboards)
 
 It's very light and simple to use, enjoy it ;)
