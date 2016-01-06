@@ -6,6 +6,8 @@ using System.Net;
 using System.Threading.Tasks;
 using RestSharp;
 using TeleSharp.Entities;
+using TeleSharp.Entities.Inline;
+using TeleSharp.Entities.SendEntities;
 using TeleSharp.Properties;
 using File = TeleSharp.Entities.File;
 
@@ -19,8 +21,16 @@ namespace TeleSharp
         private User _me;
         private int _lastFetchedMessageId;
 
+        #region Events
         public delegate void MessageDelegate(Message message);
-        public event MessageDelegate OnMessageReceived;
+        public event MessageDelegate OnMessage;
+
+        public delegate void InlineDelegate(InlineQuery inlineQuery);
+        public event InlineDelegate OnInlineQuery;
+
+        public delegate void ChooseInlineResultDelegate(ChosenInlineResult inlineResult);
+        public event ChooseInlineResultDelegate OnChooseInlineResult;
+        #endregion
 
         /// <summary>
         /// Sets up a new bot with the given authtoken.
@@ -59,26 +69,34 @@ namespace TeleSharp
         /// Get messages sent to the bot by all 
         /// </summary>
         /// <returns>A list of all the messages since the last request.</returns>
-        public async Task<List<Message>> PollMessages()
+        public async Task<List<Update>> PollMessages()
         {
-            var request = Utils.GenerateRestRequest(Resources.Method_GetUpdates, Method.POST, null,
-                new Dictionary<string, object>
-                {
-                    {Resources.Param_Timeout, Timeout},
-                    {Resources.Param_Offset, _lastFetchedMessageId + 1},
-                });
+            try
+            {
+                var request = Utils.GenerateRestRequest(Resources.Method_GetUpdates, Method.POST, null,
+                    new Dictionary<string, object>
+                    {
+                        {Resources.Param_Timeout, Timeout},
+                        {Resources.Param_Offset, _lastFetchedMessageId + 1},
+                    });
 
-            IRestResponse<List<Update>> response = null;
+                IRestResponse<List<Update>> response = null;
 
-            while (response?.Data == null)
-                response = await _botClient.ExecuteTaskAsync<List<Update>>(request);
+                while (response?.Data == null)
+                    response = await _botClient.ExecuteTaskAsync<List<Update>>(request);
 
-            if (!response.Data.Any()) return new List<Message>();
+                if (!response.Data.Any()) return new List<Update>();         
 
-            _lastFetchedMessageId = response.Data.Last().UpdateId;
-            var rawData = response.Data.Select(d => d.Message);
+                _lastFetchedMessageId = response.Data.Last().UpdateId;
+                //var rawData = response.Data.Select(d => d.Message);
 
-            return rawData.Select(d => (d.Chat.Title == null ? d.AsUserMessage() : d)).ToList();
+                return response.Data;
+                //return rawData.Select(d => (d.Chat.Title == null ? d.AsUserMessage() : d)).ToList();
+            }
+            catch (Exception ex)
+            {
+                return new List<Update>();
+            }
         }
 
         /// <summary>
@@ -88,37 +106,48 @@ namespace TeleSharp
         {
             while (true)
             {
-                var messages = await PollMessages();
+                var updates = await PollMessages();
 
-                foreach (Message message in messages)
-                    OnMessageReceived?.Invoke(message);
+                foreach (Update update in updates)
+                {
+                    if (update.Message != null)
+                    {
+                        OnMessage?.Invoke(update.Message);
+                        continue;
+                    }
+
+                    if (update.InlineQuery != null)
+                    {
+                        OnInlineQuery?.Invoke(update.InlineQuery);
+                        continue;
+                    }
+
+                    if (update.ChosenInlineResult != null)
+                        OnChooseInlineResult?.Invoke(update.ChosenInlineResult);
+                }
             }
         }
 
         /// <summary>
         /// Sends a message to the given sender (user or group chat)
         /// </summary>
-        /// <param name="sender">User or GroupChat</param>
-        /// <param name="messageText">Body of the message</param>
-        /// <param name="disableLinkPreview">disable link previews or not</param>
-        /// <param name="replyTarget">Message to reply to</param>
-        /// <returns>Message that was sen</returns>
-        public Message SendMessage(MessageSender sender, string messageText, bool disableLinkPreview = false,
-            Message replyTarget = null)
+        /// <param name="messageParams"/>Information of message to send/param>
+        /// <returns>Message that was sent</returns>
+        public Message SendMessage(SendMessageParams messageParams)
         {
-            if (sender == null)
-                throw new ArgumentNullException(nameof(sender));
+            if (messageParams == null)
+                throw new ArgumentNullException(nameof(messageParams));
 
             var request = Utils.GenerateRestRequest(Resources.Method_SendMessage, Method.POST, null,
                 new Dictionary<string, object>
                 {
-                    {Resources.Param_ChatId, sender.Id},
-                    {Resources.Param_Text, messageText},
-                    {Resources.Param_DisableWebPagePreview, disableLinkPreview}
+                    {Resources.Param_ChatId, messageParams.ChatId},
+                    {Resources.Param_Text, messageParams.Text},
+                    {Resources.Param_ParseMode, messageParams.ParseMode},
+                    {Resources.Param_DisableWebPagePreview, messageParams.DisableWebPagePreview},
+                    {Resources.Param_ReplyToMmessageId, messageParams.ReplyToMessage.MessageId},
+                    {Resources.Param_ReplyMarkup, new RestRequest().JsonSerializer.Serialize(messageParams.CustomKeyboard)}
                 });
-
-            if (replyTarget != null)
-                request.AddParameter(Resources.Param_ReplyToMmessageId, replyTarget.MessageId);
 
             var result = _botClient.Execute<Message>(request);
             return result.Data;
@@ -339,7 +368,6 @@ namespace TeleSharp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="stickerBuffer"></param>
-        /// <param name="stickerName">Name of sticker</param>
         /// <returns>Sent message</returns>
         public Message SendSticker(MessageSender sender, byte[] stickerBuffer)
         {
@@ -391,6 +419,28 @@ namespace TeleSharp
                 });
 
             return _botClient.Execute<Message>(request).Data;
+        }
+
+        public bool AnswerInlineQuery(AnswerInlineQuery answer)
+        {
+            if (answer == null)
+                throw new ArgumentNullException(nameof(answer));
+
+            var request = Utils.GenerateRestRequest(Resources.Method_AnswerInlineQuery, Method.POST,
+                new Dictionary<string, string>
+                {
+                    {Resources.HttpContentType, Resources.HttpMultiPartFormData}
+                }
+                , new Dictionary<string, object>
+                {
+                    {Resources.Param_InlineQueryid, answer.InlineQueryId},
+                    {Resources.Param_Results, new RestRequest().JsonSerializer.Serialize(answer.Results)},
+                    {Resources.Param_CacheTime, answer.CacheTime},
+                    {Resources.Param_IsPersonal, answer.IsPersonal},
+                    {Resources.Param_NextOffset, answer.NextOffset}
+                });
+
+            return _botClient.Execute<bool>(request).Data;
         }
 
         /// <summary>

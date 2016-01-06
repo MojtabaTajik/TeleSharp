@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TeleSharp.Entities;
+using TeleSharp.Entities.Inline;
+using TeleSharp.Entities.SendEntities;
 
 namespace SampleBot
 {
@@ -10,8 +13,9 @@ namespace SampleBot
 
         private static void Main(string[] args)
         {
-            Bot = new TeleSharp.TeleSharp("Bot Authentication Token");
-            Bot.OnMessageReceived += HandleMessage;
+            Bot = new TeleSharp.TeleSharp("152529427:AAFOizfzWyWHnJoQghmRAbN5IlBInd-wSe8");
+            Bot.OnMessage += OnMessage;
+            Bot.OnInlineQuery += OnInlineQuery;
 
             Console.WriteLine(@"TeleSharp initialized");
 
@@ -20,20 +24,54 @@ namespace SampleBot
             Console.ReadLine();
         }
 
+        private static void OnInlineQuery(InlineQuery inlinequery)
+        {
+            Bot.AnswerInlineQuery(new AnswerInlineQuery
+            {
+                InlineQueryId = inlinequery.Id,
+                Results = new List<InlineQueryResult>
+                {
+                    new InlineQueryResultArticle
+                    {
+                        Id = inlinequery.Query,
+                        Title = DateTime.Now.ToLongDateString(),
+                        MessageText = Guid.NewGuid().ToString(),
+                        ParseMode = "",
+                        Url = "",
+                        DisableWebPagePreview = false,
+                        Description = "",
+                        HideUrl = false,
+                        ThumbHeight = 0,
+                        ThumbWidth = 0,
+                        ThumbUrl = ""
+                    }
+                },
+                IsPersonal = false,
+                CacheTime = 300,
+                NextOffset = "0"
+            });
+        }
+
         /// <summary>
         /// Read received messages of bot in infinity loop
         /// </summary>
-        private static void HandleMessage(Message message)
+        private static void OnMessage(Message message)
         {
             // Get mesage sender information
             MessageSender sender = (MessageSender) message.Chat ?? message.From;
 
+            Console.WriteLine(message.Text ?? "");
             // If user joined to bot say welcome
             if ((!string.IsNullOrEmpty(message.Text)) && (message.Text == "/start"))
             {
                 string welcomeMessage =
-                    $"Welcome {message.From.Username} !{Environment.NewLine}My name is {Bot.Me.Username}{Environment.NewLine}I made using TeleBot : http://www.github.com/Fel0ny/TeleBot";
-                Bot.SendMessage(sender, welcomeMessage);
+                    $"Welcome {message.From.Username} !{Environment.NewLine}My name is {Bot.Me.Username}{Environment.NewLine}I made using TeleBot : http://www.github.com/Fel0ny/TeleSharp";
+
+                Bot.SendMessage(new SendMessageParams
+                {
+                    ChatId = sender.Id.ToString(),
+                    Text = welcomeMessage
+                });
                 return;
             }
 
@@ -52,7 +90,11 @@ namespace SampleBot
                 {
                     case "time":
                     {
-                        Bot.SendMessage(sender, DateTime.Now.ToLongDateString(), false);
+                        Bot.SendMessage(new SendMessageParams
+                        {
+                            ChatId = sender.Id.ToString(),
+                            Text = DateTime.Now.ToLongDateString()
+                        });
                         break;
                     }
 
@@ -111,14 +153,43 @@ namespace SampleBot
 
                     default:
                     {
-                        Bot.SendMessage(sender, "Unknown command !", true, message);
+                        Bot.SendMessage(new SendMessageParams
+                        {
+                            ChatId = sender.Id.ToString(),
+                            Text = "Unknown command !",
+                            CustomKeyboard = new ReplyKeyboardMarkup
+                            {
+                                Keyboard = new List<List<string>>
+                                {
+                                    new List<string>
+                                    {
+                                        "1",
+                                        "2",
+                                        "3"
+                                    },     new List<string>
+                                    {
+                                        "a",
+                                        "b",
+                                        "c"
+                                    }, new List<string>
+                                    {
+                                        "Answer 1", "yes", "no", ":D"
+                                    }
+                                }
+                            },ReplyToMessage = message
+                        });
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Bot.SendMessage(sender, ex.Message, true, message);
+                Bot.SendMessage(new SendMessageParams
+                {
+                    ChatId = sender.Id.ToString(),
+                    Text = ex.Message,
+                    ReplyToMessage = message,
+                });
             }
         }
 

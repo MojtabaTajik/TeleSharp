@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TeleSharp.Entities.Inline;
 
 namespace TeleSharp.Entities
 {
@@ -26,7 +27,8 @@ namespace TeleSharp.Entities
         public Video Video { get; set; }
         public Contact Contact { get; set; }
         public Location Location { get; set; }
-
+        public InlineQuery InlineQuery { get; set; }
+        public ChosenInlineResult ChosenInlineResult { get; set; }
         public User NewChatParticipant { get; set; }
         public User LeftChatParticipant { get; set; }
 
