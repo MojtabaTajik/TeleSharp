@@ -145,9 +145,14 @@ namespace TeleSharp
                     {Resources.Param_Text, messageParams.Text},
                     {Resources.Param_ParseMode, messageParams.ParseMode},
                     {Resources.Param_DisableWebPagePreview, messageParams.DisableWebPagePreview},
-                    {Resources.Param_ReplyToMmessageId, messageParams.ReplyToMessage.MessageId},
-                    {Resources.Param_ReplyMarkup, new RestRequest().JsonSerializer.Serialize(messageParams.CustomKeyboard)}
                 });
+
+            if (messageParams.ReplyToMessage != null)
+                request.AddParameter(Resources.Param_ReplyToMmessageId, messageParams.ReplyToMessage.MessageId);
+
+            if (messageParams.CustomKeyboard != null)
+                request.AddParameter(Resources.Param_ReplyMarkup,
+                    new RestRequest().JsonSerializer.Serialize(messageParams.CustomKeyboard));
 
             var result = _botClient.Execute<Message>(request);
             return result.Data;
