@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>John Mazouri</authors>
+    <owners>Jmazouri Fructifications</owners>
+    <licenseUrl>https://github.com/jmazouri/TelegramBotSharp/blob/master/TelegramBotSharp/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/jmazouri/TelegramBotSharp/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for interfacing with Telegram bots</description>
+    <tags>telegram bot</tags>
+    <dependencies>
+      <dependency id="RestSharp" version="105.1.0" />
+    </dependencies>
+  </metadata>
+</package>
