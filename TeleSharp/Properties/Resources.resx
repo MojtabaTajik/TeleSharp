@@ -255,4 +255,25 @@
   <data name="AudioFile" xml:space="preserve">
     <value>audio</value>
   </data>
+  <data name="Method_AnswerInlineQuery" xml:space="preserve">
+    <value>answerInlineQuery</value>
+  </data>
+  <data name="Param_InlineQueryid" xml:space="preserve">
+    <value>inline_query_id</value>
+  </data>
+  <data name="Param_Results" xml:space="preserve">
+    <value>results</value>
+  </data>
+  <data name="Param_CacheTime" xml:space="preserve">
+    <value>cache_time</value>
+  </data>
+  <data name="Param_IsPersonal" xml:space="preserve">
+    <value>is_personal</value>
+  </data>
+  <data name="Param_NextOffset" xml:space="preserve">
+    <value>next_offset</value>
+  </data>
+  <data name="Param_ParseMode" xml:space="preserve">
+    <value>parse_mode</value>
+  </data>
 </root>

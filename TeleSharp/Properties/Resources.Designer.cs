@@ -169,6 +169,15 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to answerInlineQuery.
+        /// </summary>
+        internal static string Method_AnswerInlineQuery {
+            get {
+                return ResourceManager.GetString("Method_AnswerInlineQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to forwardMessage.
         /// </summary>
         internal static string Method_ForwardMessage {
@@ -295,6 +304,15 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to cache_time.
+        /// </summary>
+        internal static string Param_CacheTime {
+            get {
+                return ResourceManager.GetString("Param_CacheTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to caption.
         /// </summary>
         internal static string Param_Caption {
@@ -340,6 +358,24 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to inline_query_id.
+        /// </summary>
+        internal static string Param_InlineQueryid {
+            get {
+                return ResourceManager.GetString("Param_InlineQueryid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is_personal.
+        /// </summary>
+        internal static string Param_IsPersonal {
+            get {
+                return ResourceManager.GetString("Param_IsPersonal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to latitude.
         /// </summary>
         internal static string Param_Latitude {
@@ -367,11 +403,29 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to next_offset.
+        /// </summary>
+        internal static string Param_NextOffset {
+            get {
+                return ResourceManager.GetString("Param_NextOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to offset.
         /// </summary>
         internal static string Param_Offset {
             get {
                 return ResourceManager.GetString("Param_Offset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to parse_mode.
+        /// </summary>
+        internal static string Param_ParseMode {
+            get {
+                return ResourceManager.GetString("Param_ParseMode", resourceCulture);
             }
         }
         
@@ -390,6 +444,15 @@ namespace TeleSharp.Properties {
         internal static string Param_ReplyToMmessageId {
             get {
                 return ResourceManager.GetString("Param_ReplyToMmessageId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to results.
+        /// </summary>
+        internal static string Param_Results {
+            get {
+                return ResourceManager.GetString("Param_Results", resourceCulture);
             }
         }
         
