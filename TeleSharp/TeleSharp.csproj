@@ -53,6 +53,7 @@
     <Compile Include="Entities\Inline\InlineQueryResultMpeg4Gif.cs" />
     <Compile Include="Entities\Inline\InlineQueryResultPhoto.cs" />
     <Compile Include="Entities\Inline\InlineQueryResultVideo.cs" />
+    <Compile Include="Entities\SendEntities\KeyboardButton.cs" />
     <Compile Include="Entities\SendEntities\ReplyKeyboardMarkup.cs" />
     <Compile Include="Entities\SendEntities\SendMessageParams.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
