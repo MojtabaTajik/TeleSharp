@@ -13,7 +13,8 @@ namespace SampleBot
 
         private static void Main(string[] args)
         {
-            Bot = new TeleSharp.TeleSharp("152529427:AAFOizfzWyWHnJoQghmRAbN5IlBInd-wSe8");
+            //Bot = new TeleSharp.TeleSharp("152529427:AAFOizfzWyWHnJoQghmRAbN5IlBInd-wSe8");
+            Bot = new TeleSharp.TeleSharp("284484049:AAFK6HuhutBDA7h6l5VBR7KRFqnIE-bz_js");
             Bot.OnMessage += OnMessage;
             Bot.OnInlineQuery += OnInlineQuery;
 
@@ -58,7 +59,7 @@ namespace SampleBot
         private static void OnMessage(Message message)
         {
             // Get mesage sender information
-            MessageSender sender = (MessageSender) message.Chat ?? message.From;
+            MessageSender sender = (MessageSender)message.Chat ?? message.From;
 
             Console.WriteLine(message.Text ?? "");
             // If user joined to bot say welcome
@@ -79,6 +80,8 @@ namespace SampleBot
 
             // If any file exists in message download it
             DownloadFileFromMessage(message, baseStoragePath);
+            // If Send Location or Contact
+            GetLocationContactFromMessage(message, sender);
 
             if (string.IsNullOrEmpty(message.Text) || string.IsNullOrEmpty(baseStoragePath))
                 return;
@@ -86,121 +89,144 @@ namespace SampleBot
             try
             {
                 string sampleData = Path.Combine(baseStoragePath, "SampleData");
-                switch (message.Text.ToLower())
-                {
-                    case "time":
+
+                if (!string.IsNullOrEmpty(message.Text))
+                    switch (message.Text.ToLower())
                     {
-                        Bot.SendMessage(new SendMessageParams
-                        {
-                            ChatId = sender.Id.ToString(),
-                            Text = DateTime.Now.ToLongDateString()
-                        });
-                        break;
-                    }
-
-                    case "location":
-                    {
-                        Bot.SendLocation(sender, "50.69421", "3.17456");
-                        break;
-                    }
-
-                    case "sticker":
-                    {
-                        Bot.SendSticker(sender, System.IO.File.ReadAllBytes(Path.Combine(sampleData, "sticker.png")));
-                        break;
-                    }
-
-                    case "photo":
-                    {
-                        string photoFilePath = Path.Combine(sampleData, "sticker.png");
-
-                        Bot.SetCurrentAction(sender, ChatAction.UploadPhoto);
-                        Bot.SendPhoto(sender, System.IO.File.ReadAllBytes(photoFilePath),
-                            Path.GetFileName(photoFilePath), "This is sample photo");
-                        break;
-                    }
-
-                    case "video":
-                    {
-                        string videoFilePath = Path.Combine(sampleData, "video.mp4");
-
-                        Bot.SetCurrentAction(sender, ChatAction.UploadVideo);
-                        Bot.SendVideo(sender, System.IO.File.ReadAllBytes(videoFilePath),
-                            Path.GetFileName(videoFilePath), "This is sample video");
-                        break;
-                    }
-
-                    case "audio":
-                    {
-                        string audioFilePath = Path.Combine(sampleData, "audio.mp3");
-
-                        Bot.SetCurrentAction(sender, ChatAction.UploadAudio);
-                        Bot.SendAudio(sender, System.IO.File.ReadAllBytes(audioFilePath),
-                            Path.GetFileName(audioFilePath));
-                        break;
-                    }
-
-                    case "document":
-                    {
-                        string documentFilePath = Path.Combine(sampleData, "Document.txt");
-
-                        Bot.SetCurrentAction(sender, ChatAction.UploadDocument);
-                        Bot.SendDocument(sender, System.IO.File.ReadAllBytes(documentFilePath),
-                            Path.GetFileName(documentFilePath));
-                        break;
-                    }
-
-                    case "keyboard":
-                    {
-                        Bot.SendMessage(new SendMessageParams
-                        {
-                            ChatId = sender.Id.ToString(),
-                            Text = "This is sample keyboard :",
-                            CustomKeyboard = new ReplyKeyboardMarkup
+                        case "time":
                             {
-                                Keyboard = new List<List<string>>
+                                Bot.SendMessage(new SendMessageParams
                                 {
-                                    new List<string>
+                                    ChatId = sender.Id.ToString(),
+                                    Text = DateTime.Now.ToLongDateString()
+                                });
+                                break;
+                            }
+
+                        case "location":
+                            {
+                                Bot.SendLocation(sender, "50.69421", "3.17456");
+                                break;
+                            }
+
+                        case "sticker":
+                            {
+                                Bot.SendSticker(sender, System.IO.File.ReadAllBytes(Path.Combine(sampleData, "sticker.png")));
+                                break;
+                            }
+
+                        case "photo":
+                            {
+                                string photoFilePath = Path.Combine(sampleData, "sticker.png");
+
+                                Bot.SetCurrentAction(sender, ChatAction.UploadPhoto);
+                                Bot.SendPhoto(sender, System.IO.File.ReadAllBytes(photoFilePath),
+                                    Path.GetFileName(photoFilePath), "This is sample photo");
+                                break;
+                            }
+
+                        case "video":
+                            {
+                                string videoFilePath = Path.Combine(sampleData, "video.mp4");
+
+                                Bot.SetCurrentAction(sender, ChatAction.UploadVideo);
+                                Bot.SendVideo(sender, System.IO.File.ReadAllBytes(videoFilePath),
+                                    Path.GetFileName(videoFilePath), "This is sample video");
+                                break;
+                            }
+
+                        case "audio":
+                            {
+                                string audioFilePath = Path.Combine(sampleData, "audio.mp3");
+
+                                Bot.SetCurrentAction(sender, ChatAction.UploadAudio);
+                                Bot.SendAudio(sender, System.IO.File.ReadAllBytes(audioFilePath),
+                                    Path.GetFileName(audioFilePath));
+                                break;
+                            }
+
+                        case "document":
+                            {
+                                string documentFilePath = Path.Combine(sampleData, "Document.txt");
+
+                                Bot.SetCurrentAction(sender, ChatAction.UploadDocument);
+                                Bot.SendDocument(sender, System.IO.File.ReadAllBytes(documentFilePath),
+                                    Path.GetFileName(documentFilePath));
+                                break;
+                            }
+
+                        case "keyboard":
+                            {
+                                Bot.SendMessage(new SendMessageParams
+                                {
+                                    ChatId = sender.Id.ToString(),
+                                    Text = "This is sample keyboard :",
+                                    CustomKeyboard = new ReplyKeyboardMarkup
                                     {
-                                        "Yes",
-                                        "No",
-                                        "Cancel"
+                                        Keyboard = new List<List<KeyboardButton>>
+                                {
+                                    new List<KeyboardButton>
+                                    {
+                                        new KeyboardButton { Text="send location",RequestContact=false,RequestLocation=true },
+                                        new KeyboardButton {Text="contact",RequestContact=true,RequestLocation=false },
+                                        new KeyboardButton {Text="cancel",RequestContact=false,RequestLocation=false }
                                     }
                                 }
-                            },
-                            ReplyToMessage = message
-                        });
+                                    },
+                                    ReplyToMessage = message
+                                });
 
-                        break;
+                                break;
+                            }
+                        case "cancel":
+                            {
+                                Bot.SendMessage(new SendMessageParams
+                                {
+                                    ChatId = sender.Id.ToString(),
+                                    Text = $"You choose keyboard command : {message.Text}",
+                                });
+                                break;
+                            }
+
+                        default:
+                            {
+                                Bot.SendMessage(new SendMessageParams
+                                {
+                                    ChatId = sender.Id.ToString(),
+                                    Text = "Unknown command !",
+                                });
+
+                                break;
+                            }
                     }
-
-                    case "yes":
-                    case "no":
-                    case "cancel":
-                    {
-                        Bot.SendMessage(new SendMessageParams
-                        {
-                            ChatId = sender.Id.ToString(),
-                            Text = $"You choose keyboard command : {message.Text}",                            
-                        });
-                        break;
-                    }
-
-                    default:
-                    {
-                        Bot.SendMessage(new SendMessageParams
-                        {
-                            ChatId = sender.Id.ToString(),
-                            Text = "Unknown command !",
-                        });
-
-                        break;
-                    }
-                }
             }
             catch (Exception ex)
             {
 
+            }
+        }
+
+        private static void GetLocationContactFromMessage(Message message, MessageSender sender)
+        {
+            if (message.Location != null)
+            {
+                Console.WriteLine($"Location :({message.Location.Latitude},{message.Location.Longitude})");
+                Bot.SendMessage(new SendMessageParams
+                {
+                    ChatId = sender.Id.ToString(),
+                    Text = $"You Send location",
+                    ReplyToMessage = message
+                });
+            }
+            else if (message.Contact != null)
+            {
+                Console.WriteLine($"Contact :({message.Contact.FirstName},{message.Contact.LastName},{message.Contact.PhoneNumber})");
+                Bot.SendMessage(new SendMessageParams
+                {
+                    ChatId = sender.Id.ToString(),
+                    Text = $"You Send Contact",
+                    ReplyToMessage = message
+                });
             }
         }
 
@@ -235,7 +261,7 @@ namespace SampleBot
             // Download sticker if exists
             if (message.Sticker != null)
                 fileInfo = Bot.DownloadFileById(message.Sticker.FileId, savePath);
-
+            //
             if (fileInfo != null)
                 Console.WriteLine($"File : {fileInfo.FilePath} Size : {fileInfo.FileSize} was downloaded successfully");
         }
