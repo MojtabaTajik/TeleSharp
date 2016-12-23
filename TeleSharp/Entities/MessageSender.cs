@@ -3,5 +3,6 @@
     public class MessageSender
     {
         public int Id { get; set; }
+
     }
 }

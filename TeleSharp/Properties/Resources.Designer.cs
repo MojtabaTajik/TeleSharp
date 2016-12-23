@@ -169,11 +169,29 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to answerCallbackQuery.
+        /// </summary>
+        internal static string Method_AnswerCallbackQuery {
+            get {
+                return ResourceManager.GetString("Method_AnswerCallbackQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to answerInlineQuery.
         /// </summary>
         internal static string Method_AnswerInlineQuery {
             get {
                 return ResourceManager.GetString("Method_AnswerInlineQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to editMessageText.
+        /// </summary>
+        internal static string Method_EditMessageText {
+            get {
+                return ResourceManager.GetString("Method_EditMessageText", resourceCulture);
             }
         }
         
@@ -313,6 +331,15 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to callback_query_id.
+        /// </summary>
+        internal static string Param_CallbackQueryId {
+            get {
+                return ResourceManager.GetString("Param_CallbackQueryId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to caption.
         /// </summary>
         internal static string Param_Caption {
@@ -354,6 +381,15 @@ namespace TeleSharp.Properties {
         internal static string Param_FromChatId {
             get {
                 return ResourceManager.GetString("Param_FromChatId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to inline_message_id.
+        /// </summary>
+        internal static string Param_InlineMessageId {
+            get {
+                return ResourceManager.GetString("Param_InlineMessageId", resourceCulture);
             }
         }
         
@@ -457,6 +493,15 @@ namespace TeleSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to show_alert.
+        /// </summary>
+        internal static string Param_show_alert {
+            get {
+                return ResourceManager.GetString("Param_show_alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to text.
         /// </summary>
         internal static string Param_Text {
@@ -471,6 +516,15 @@ namespace TeleSharp.Properties {
         internal static string Param_Timeout {
             get {
                 return ResourceManager.GetString("Param_Timeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to url.
+        /// </summary>
+        internal static string Param_url {
+            get {
+                return ResourceManager.GetString("Param_url", resourceCulture);
             }
         }
         

@@ -276,4 +276,22 @@
   <data name="Param_ParseMode" xml:space="preserve">
     <value>parse_mode</value>
   </data>
+  <data name="Method_AnswerCallbackQuery" xml:space="preserve">
+    <value>answerCallbackQuery</value>
+  </data>
+  <data name="Method_EditMessageText" xml:space="preserve">
+    <value>editMessageText</value>
+  </data>
+  <data name="Param_CallbackQueryId" xml:space="preserve">
+    <value>callback_query_id</value>
+  </data>
+  <data name="Param_InlineMessageId" xml:space="preserve">
+    <value>inline_message_id</value>
+  </data>
+  <data name="Param_show_alert" xml:space="preserve">
+    <value>show_alert</value>
+  </data>
+  <data name="Param_url" xml:space="preserve">
+    <value>url</value>
+  </data>
 </root>

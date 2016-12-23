@@ -13,16 +13,66 @@ namespace SampleBot
 
         private static void Main(string[] args)
         {
-            //Bot = new TeleSharp.TeleSharp("152529427:AAFOizfzWyWHnJoQghmRAbN5IlBInd-wSe8");
-            Bot = new TeleSharp.TeleSharp("284484049:AAFK6HuhutBDA7h6l5VBR7KRFqnIE-bz_js");
+            Bot = new TeleSharp.TeleSharp("152529427:AAFOizfzWycWHnJoQghmRAbN5IlBInd-wSe8");
+            Bot.SendMessage(new SendMessageParams
+            {
+                ChatId = "39699831",
+                Text = "Test msg !",
+                InlineKeyboard = new InlineKeyboardMarkup
+                {
+                    InlineKeyboard = new List<List<InlineKeyboardButton>>
+                    {
+                        new List<InlineKeyboardButton>
+                        {
+                             new InlineKeyboardButton {Text="CallbackData",CallbackData="Ok",SwitchInlineQuery=string.Empty,SwitchInlineQueryCurrentChat=string.Empty,Url=string.Empty },
+                        },
+                        new List<InlineKeyboardButton>
+                        {
+                             new InlineKeyboardButton {Text="SwitchInlineQueryCurrentChat",CallbackData=string.Empty,SwitchInlineQuery=string.Empty,SwitchInlineQueryCurrentChat="OK",Url=string.Empty },
+                        },
+                         new List<InlineKeyboardButton>
+                        {
+                             new InlineKeyboardButton {Text="Url",CallbackData=string.Empty,SwitchInlineQuery=string.Empty,SwitchInlineQueryCurrentChat=string.Empty,Url="http://dualp.ir" },
+                        },
+                        new List<InlineKeyboardButton>
+                        {
+                              new InlineKeyboardButton {Text="SwitchInlineQuery",SwitchInlineQuery="سلام",Url=string.Empty,CallbackData=string.Empty,SwitchInlineQueryCurrentChat=string.Empty }
+                        }
+                    }
+                }
+            });
             Bot.OnMessage += OnMessage;
             Bot.OnInlineQuery += OnInlineQuery;
+            Bot.OnCallbackQuery += Bot_OnCallbackQuery;
+
+
 
             Console.WriteLine(@"TeleSharp initialized");
 
             Console.WriteLine($"Hi, My Name is : {Bot.Me.Username}");
 
             Console.ReadLine();
+        }
+
+        private static void Bot_OnCallbackQuery(CallbackQuery CallbackQuery)
+        {
+            Bot.AnswerCallbackQuery(CallbackQuery, "Hello");
+            Bot.EditMessageText(new SendMessageParams
+            {
+                ChatId = CallbackQuery.Message.Chat.Id.ToString(),
+                MessageId = CallbackQuery.Message.MessageId.ToString(),
+                Text=CallbackQuery.Message.Text,
+                InlineKeyboard = new InlineKeyboardMarkup
+                {
+                    InlineKeyboard = new List<List<InlineKeyboardButton>>
+                     {
+                         new List<InlineKeyboardButton>
+                         {
+                             new InlineKeyboardButton {Text="Test",CallbackData="OK",SwitchInlineQuery=string.Empty,SwitchInlineQueryCurrentChat=string.Empty,Url=string.Empty }
+                         }
+                     }
+                }
+            });
         }
 
         private static void OnInlineQuery(InlineQuery inlinequery)
@@ -60,7 +110,7 @@ namespace SampleBot
         {
             // Get mesage sender information
             MessageSender sender = (MessageSender)message.Chat ?? message.From;
-
+            
             Console.WriteLine(message.Text ?? "");
             // If user joined to bot say welcome
             if ((!string.IsNullOrEmpty(message.Text)) && (message.Text == "/start"))
@@ -167,11 +217,12 @@ namespace SampleBot
                                 {
                                     new List<KeyboardButton>
                                     {
-                                        new KeyboardButton { Text="send location",RequestContact=false,RequestLocation=true },
-                                        new KeyboardButton {Text="contact",RequestContact=true,RequestLocation=false },
-                                        new KeyboardButton {Text="cancel",RequestContact=false,RequestLocation=false }
+                                        new KeyboardButton { Text="send location",RequestContact=false,RequestLocation=true }
+                                        ,   new KeyboardButton {Text="cancel",RequestContact=false,RequestLocation=false }
+
                                     }
-                                }
+                                },
+                                        ResizeKeyboard = true
                                     },
                                     ReplyToMessage = message
                                 });
@@ -249,8 +300,8 @@ namespace SampleBot
 
 
             // Download audio if exists
-            if (message.Voice != null)
-                fileInfo = Bot.DownloadFileById(message.Voice.FileId, savePath);
+            if (message.Audio != null)
+                fileInfo = Bot.DownloadFileById(message.Audio.FileId, savePath);
 
 
             // Download photo if exists

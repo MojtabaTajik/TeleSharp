@@ -30,6 +30,8 @@ namespace TeleSharp
 
         public delegate void ChooseInlineResultDelegate(ChosenInlineResult inlineResult);
         public event ChooseInlineResultDelegate OnChooseInlineResult;
+        public delegate void CallbackQueryDelegate(CallbackQuery CallbackQuery);
+        public event CallbackQueryDelegate OnCallbackQuery;
         #endregion
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace TeleSharp
                 while (response?.Data == null)
                     response = await _botClient.ExecuteTaskAsync<List<Update>>(request);
 
-                if (!response.Data.Any()) return new List<Update>();         
+                if (!response.Data.Any()) return new List<Update>();
 
                 _lastFetchedMessageId = response.Data.Last().UpdateId;
                 //var rawData = response.Data.Select(d => d.Message);
@@ -124,6 +126,8 @@ namespace TeleSharp
 
                     if (update.ChosenInlineResult != null)
                         OnChooseInlineResult?.Invoke(update.ChosenInlineResult);
+                    if (update.CallbackQuery != null)
+                        OnCallbackQuery?.Invoke(update.CallbackQuery);
                 }
             }
         }
@@ -153,11 +157,60 @@ namespace TeleSharp
             if (messageParams.CustomKeyboard != null)
                 request.AddParameter(Resources.Param_ReplyMarkup,
                     new RestRequest().JsonSerializer.Serialize(messageParams.CustomKeyboard));
+            if (messageParams.InlineKeyboard != null)
+                request.AddParameter(Resources.Param_ReplyMarkup,
+                    new RestRequest().JsonSerializer.Serialize(messageParams.InlineKeyboard));
+            if (messageParams.ReplyKeyboardRemove != null)
+                request.AddParameter(Resources.Param_ReplyMarkup,
+                   new RestRequest().JsonSerializer.Serialize(messageParams.ReplyKeyboardRemove));
 
             var result = _botClient.Execute<Message>(request);
             return result.Data;
         }
+        public Message AnswerCallbackQuery(CallbackQuery sender, string text = null, bool? show_alert = null, string url = null, int? cache_time = null)
+        {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            var request = Utils.GenerateRestRequest(Resources.Method_AnswerCallbackQuery, Method.POST,
+               new Dictionary<string, string>
+               {
+                    {Resources.HttpContentType, Resources.HttpMultiPartFormData}
+               }
+               , new Dictionary<string, object>
+               {
+                    {Resources.Param_CallbackQueryId, sender.Id},
+               });
+            if (!string.IsNullOrEmpty(text))
+                request.Parameters.Add(new Parameter { Name = Resources.Param_Text, Value = text, Type = ParameterType.GetOrPost });
+            if (show_alert != null)
+                request.Parameters.Add(new Parameter { Name = Resources.Param_show_alert, Value = show_alert, Type = ParameterType.GetOrPost });
+            if (!string.IsNullOrEmpty(url))
+                request.Parameters.Add(new Parameter { Name = Resources.Param_url, Value = url, Type = ParameterType.GetOrPost });
+            if (cache_time != null)
+                request.Parameters.Add(new Parameter { Name = Resources.Param_CacheTime, Value = cache_time, Type = ParameterType.GetOrPost });
+            return _botClient.Execute<Message>(request).Data;
+        }
+        public Message EditMessageText(SendMessageParams messageParams)
+        {
+            if (messageParams == null)
+                throw new ArgumentNullException(nameof(messageParams));
 
+            var request = Utils.GenerateRestRequest(Resources.Method_EditMessageText, Method.POST, null,
+                new Dictionary<string, object>
+                {
+                    {Resources.Param_ChatId, messageParams.ChatId},
+                    {Resources.Param_MessageId,messageParams.MessageId },
+                    {Resources.Param_InlineMessageId,messageParams.InlineMessageId },
+                    {Resources.Param_Text, messageParams.Text},
+                    {Resources.Param_ParseMode, messageParams.ParseMode},
+                    {Resources.Param_DisableWebPagePreview, messageParams.DisableWebPagePreview},
+                });
+            if (messageParams.InlineKeyboard != null)
+                request.AddParameter(Resources.Param_ReplyMarkup,
+                    new RestRequest().JsonSerializer.Serialize(messageParams.InlineKeyboard));
+            var result = _botClient.Execute<Message>(request);
+            return result.Data;
+        }
         /// <summary>
         /// Indicates that the bot is doing a specified action
         /// </summary>
