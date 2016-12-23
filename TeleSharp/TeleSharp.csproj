@@ -43,7 +43,12 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Animation.cs" />
+    <Compile Include="Entities\Audio.cs" />
+    <Compile Include="Entities\CallbackQuery.cs" />
+    <Compile Include="Entities\Chat.cs" />
     <Compile Include="Entities\FileDownloadResult.cs" />
+    <Compile Include="Entities\Game.cs" />
     <Compile Include="Entities\Inline\AnswerInlineQuery.cs" />
     <Compile Include="Entities\Inline\ChosenInlineResult.cs" />
     <Compile Include="Entities\Inline\InlineQuery.cs" />
@@ -53,9 +58,14 @@
     <Compile Include="Entities\Inline\InlineQueryResultMpeg4Gif.cs" />
     <Compile Include="Entities\Inline\InlineQueryResultPhoto.cs" />
     <Compile Include="Entities\Inline\InlineQueryResultVideo.cs" />
+    <Compile Include="Entities\MessageEntity.cs" />
+    <Compile Include="Entities\SendEntities\InlineKeyboardButton.cs" />
+    <Compile Include="Entities\SendEntities\InlineKeyboardMarkup.cs" />
     <Compile Include="Entities\SendEntities\KeyboardButton.cs" />
     <Compile Include="Entities\SendEntities\ReplyKeyboardMarkup.cs" />
+    <Compile Include="Entities\SendEntities\ReplyKeyboardRemove.cs" />
     <Compile Include="Entities\SendEntities\SendMessageParams.cs" />
+    <Compile Include="Entities\Venue.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
